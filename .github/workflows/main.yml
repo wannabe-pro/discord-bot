@@ -1,0 +1,25 @@
+name: build
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.12.1'
+      - name: Install
+        run: npm install
+      - name: Build
+        run: mkdir dist && tar -zchvf dist/modules.tgz package-lock.json node_modules
+      - name: Create release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: latest
+          prerelease: true
+          title: "Development Build"
+          files: |
+            dist/modules.tgz
